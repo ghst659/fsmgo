@@ -10,6 +10,14 @@ import (
 type Ping struct{}
 type Pong struct{}
 
+func (s *Ping) Name() string {
+	return "Ping"
+}
+
+func (s *Pong) Name() string {
+	return "Pong"
+}
+
 func (s *Ping) Process(inData interface{}) (nextKey string, outData interface{}, err error) {
 	err = nil
 	inStr := inData.(string)
@@ -40,12 +48,12 @@ func main() {
 	if m, err := fsm.New(); err == nil {
 		ping := new(Ping)
 		pong := new(Pong)
-		m.RegisterState("Ping", ping)
-		m.RegisterState("Pong", pong)
+		m.RegisterState(ping)
+		m.RegisterState(pong)
 		m.SetCurrentState("Ping")
 		for _, arg := range flag.Args() {
 			odata, _ := m.Process(arg)
-			if sName, err := m.GetCurrentState(); err == nil {
+			if sName, err := m.CurrentState(); err == nil {
 				fmt.Println(sName, arg, odata)
 			}
 		}

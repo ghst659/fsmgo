@@ -21,7 +21,7 @@ func (m *machine) RegisterState(s State) (err error) {
 	if s == nil {
 		err = errors.New("Invalid nil state.")
 	} else {
-		key = s.Name()
+		key := s.Name()
 		if _, isRegistered := m.states[key]; isRegistered {
 			err = errors.New("State already registered")
 		} else {
@@ -57,7 +57,7 @@ func (m *machine) Process(inData interface{}) (outData interface{}, err error) {
 		s := m.states[m.current]
 		nextKey, outData, err = s.Process(inData)
 		if err == nil {
-			err = m.SetState(nextKey)
+			err = m.SetCurrentState(nextKey)
 		}
 	} else {
 		outData = nil
