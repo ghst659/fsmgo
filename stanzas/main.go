@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"flag"
-	"strings"
+	"fmt"
 	"github.com/ghst659/fsmgo/fsm"
+	"strings"
 )
 
-type Ping struct {}
-type Pong struct {}
+type Ping struct{}
+type Pong struct{}
 
 func (s *Ping) Process(inData interface{}) (nextKey string, outData interface{}, err error) {
 	err = nil
@@ -34,7 +34,6 @@ func (s *Pong) Process(inData interface{}) (nextKey string, outData interface{},
 	return
 }
 
-
 func main() {
 	// var fp_fixed = flag.Bool("verbose", false, "run verbosely.")
 	flag.Parse()
@@ -43,10 +42,10 @@ func main() {
 		pong := new(Pong)
 		m.RegisterState("Ping", ping)
 		m.RegisterState("Pong", pong)
-		m.SetState("Ping")
+		m.SetCurrentState("Ping")
 		for _, arg := range flag.Args() {
 			odata, _ := m.Process(arg)
-			if sName, err := m.GetState(); err == nil {
+			if sName, err := m.GetCurrentState(); err == nil {
 				fmt.Println(sName, arg, odata)
 			}
 		}

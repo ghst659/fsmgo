@@ -6,7 +6,7 @@ import (
 
 type machine struct {
 	current string
-	states map[string]State
+	states  map[string]State
 }
 
 func New() (m Machine, err error) {
@@ -17,19 +17,22 @@ func New() (m Machine, err error) {
 	return
 }
 
-func (m *machine) RegisterState(key string, s State) (err error) {
-	if _, alreadyRegistered := m.states[key]; alreadyRegistered {
-		err = errors.New("State already registered")
-	} else if s == nil {
+func (m *machine) RegisterState(s State) (err error) {
+	if s == nil {
 		err = errors.New("Invalid nil state.")
 	} else {
-		m.states[key] = s
-		err = nil
+		key = s.Name()
+		if _, isRegistered := m.states[key]; isRegistered {
+			err = errors.New("State already registered")
+		} else {
+			m.states[key] = s
+			err = nil
+		}
 	}
 	return
 }
 
-func (m *machine) GetState() (key string, err error) {
+func (m *machine) CurrentState() (key string, err error) {
 	if _, ok := m.states[m.current]; ok {
 		key = m.current
 	} else {
@@ -39,7 +42,7 @@ func (m *machine) GetState() (key string, err error) {
 	return
 }
 
-func (m *machine) SetState(key string) (err error) {
+func (m *machine) SetCurrentState(key string) (err error) {
 	if _, registered := m.states[key]; registered {
 		m.current = key
 	} else {
